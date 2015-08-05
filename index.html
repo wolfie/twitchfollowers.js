@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Twitch follower alerts</title>
+</head>
+<body>
+<style>
+    #result .error {
+        background-color: red;
+        color: white;
+    }
+</style>
+
+<div id="result"></div>
+<!--
+This tag contains all the JSONP data.
+Need to use JSONP to circumvent cross site scripting protections
+-->
+<div id="data"></div>
+
+<script>
+    window.announceNewFollowers = function(followers) {
+        /* Flashy things go here. */
+
+        followers.forEach(function(follower) {
+            var div = document.createElement('div');
+            div.textContent = follower.name;
+            result.appendChild(div);
+        });
+    };
+
+    window.announceNewFollowersRaw = function(result) {
+        var getFollower = function(follower) {
+            return {
+                name: follower.user.display_name,
+                logo: follower.user.logo,
+                notifications: follower.notifications,
+            };
+        };
+
+        var followers = [];
+        result.follows.forEach(function(follower) {
+            followers.push(getFollower(follower));
+        });
+        window.announceNewFollowers(followers);
+    };
+</script>
+
+<script>
+    var API = 'https://api.twitch.tv/kraken/channels';
+    //var ticklength = 10000; // 10sec in millis
+    var ticklength = 300000; // 5min in millis
+    var channel = parseChannel();
+    var timeoutId = 0;
+
+    window.followersCallback = function(jsonp) {
+        error('receiving jsonp data without a properly configured callback')
+    };
+
+    function resultClear() {
+        while (result.firstChild) {
+            result.removeChild(result.firstChild);
+        }
+    }
+
+    function error(string) {
+        console.error(string);
+
+        var errorSpan = document.createElement('span');
+        errorSpan.className = 'error';
+        errorSpan.textContent = string;
+
+        resultClear();
+        result.appendChild(errorSpan);
+    }
+
+    function log(string) {
+        console.log(string);
+    }
+
+    function parseChannel() {
+        var channel = location.hash;
+        if (channel.trim()) {
+            return channel.substr(1);
+        } else {
+            return null;
+        }
+    }
+
+    function followers(offset, limit, callback) {
+        var URI = API+'/'+channel+'/follows';
+        offset = offset || 0;
+        limit = limit || 0;
+
+        URI += "?offset="+offset+"&limit="+limit+"&direction=asc&callback=followersCallback&time="+(new Date().getTime());
+        window.followersCallback = callback;
+
+        // fetch data over JSONP
+        var dataScript = document.createElement('script');
+        dataScript.src = URI;
+
+        data.innerHTML = '';
+        data.appendChild(dataScript);
+        log('Fetching new followers with '+URI);
+    }
+
+    function tick(previousFollowersCount) {
+        window.clearTimeout(timeoutId);
+        timeoutId = setTimeout(function() {
+            followers(previousFollowersCount, 25, function(result) {
+                var newFollowersCount = result._total;
+                if (newFollowersCount > previousFollowersCount) {
+                    if (window.announceNewFollowersRaw) {
+                        resultClear();
+                        window.announceNewFollowersRaw(result, result);
+                    } else {
+                        error('window.announceNewFollowersRaw is not defined');
+                    }
+                } else {
+                    log('No new followers found ('+newFollowersCount+')');
+                }
+                tick(newFollowersCount);
+            });
+        }, ticklength);
+
+        var nextTick = new Date();
+        nextTick.setMilliseconds(nextTick.getMilliseconds()+ticklength);
+        log('Scheduled next tick for '+nextTick);
+    }
+
+    function start() {
+        log('Searching initial follower count for "'+channel+'"');
+        followers(0, 1, function(followers){
+            var initCount = followers._total;
+            log('Initial follower count: '+initCount);
+            tick(initCount);
+        });
+    }
+
+    function stop() {
+        window.clearInterval(timeoutId);
+        log('stopped');
+    }
+
+    (function() {
+        window.onhashchange = function() { window.location.reload() };
+
+        if (!channel) {
+            error('Channel name needs to be in the hash');
+            return;
+        }
+
+        start();
+    })();
+</script>
+</body>
+</html>

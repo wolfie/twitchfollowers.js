@@ -88,11 +88,17 @@ Need to use JSONP to circumvent cross site scripting protections
     }
 
     function followers(offset, limit, callback) {
-        var URI = API+'/'+channel+'/follows';
         offset = offset || 0;
         limit = limit || 0;
 
-        URI += "?offset="+offset+"&limit="+limit+"&direction=asc&callback=followersCallback&time="+(new Date().getTime());
+        var URI = API +
+                "/" + channel +
+                "/follows" +
+                "?offset=" + offset +
+                "&limit=" + limit +
+                "&direction=asc" +
+                "&callback=followersCallback" +
+                "&time="+(new Date().getTime());
         window.followersCallback = callback;
 
         // fetch data over JSONP

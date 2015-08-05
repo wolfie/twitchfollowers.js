@@ -98,6 +98,7 @@ Need to use JSONP to circumvent cross site scripting protections
                 "&limit=" + limit +
                 "&direction=asc" +
                 "&callback=followersCallback" +
+                "&api_version=3" +
                 "&time="+(new Date().getTime());
         window.followersCallback = callback;
 

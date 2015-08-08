@@ -9,6 +9,21 @@
         background-color: red;
         color: white;
     }
+
+    .particle {
+        width: 5px;
+        height: 5px;
+        background-color: red;
+        border-radius: 3px;
+        position: absolute;
+    }
+
+    .cannon {
+        width: 20px;
+        height: 20px;
+        background-color: black;
+        position: absolute;
+    }
 </style>
 
 <div id="result"></div>
@@ -19,8 +34,132 @@ Need to use JSONP to circumvent cross site scripting protections
 <div id="data"></div>
 
 <script>
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var gravity = 0.0010;
+    var entities = [];
+
+    function Entity(element) {
+        this.element = element;
+    }
+
+    Entity.prototype.tick = function() {
+        console.error("something doesn't have a tick function");
+    };
+
+    Entity.prototype.kill = function() {
+        var idx = entities.indexOf(this);
+        if (idx > -1) {
+            entities.splice(idx, 1);
+        }
+    };
+
+    function VisualEntity(x, y, classname) {
+        Entity.call(this);
+
+        this.setPosition = function (x, y) {
+            this.x = x;
+            this.y = y;
+            this.element.style.top = y+'px';
+            this.element.style.left = x+'px';
+        };
+
+        this.element = document.createElement('div');
+        this.element.className = classname;
+        this.setPosition(x, y);
+        result.appendChild(this.element); // todo: remove?
+    }
+
+    VisualEntity.prototype = Object.create(Entity.prototype);
+    VisualEntity.prototype.kill = function() {
+        var parent = this.element.parentNode;
+        if (parent) {
+            parent.removeChild(this.element);
+        }
+        Entity.prototype.kill.call(this);
+    };
+
+    function Cannon(x, y) {
+        VisualEntity.call(this, x, y, 'cannon');
+        this.hasFired = false;
+        this.timeToLive = 5000; // ms
+
+        this.tick = function(dTime) {
+            if (this.timeToLive < 0) {
+                this.kill();
+            } else {
+                this.timeToLive -= dTime;
+            }
+
+            if (this.hasFired) {
+                return;
+            }
+
+            var deg = 90 - (this.x/width - .5)*90 ;
+            var varDeg = 10;
+
+            for (var i=0; i<50; i++) {
+                var bullet = new Particle(this.x, this.y);
+                var r = (Math.random() * varDeg) - varDeg/2;
+                bullet.setDirection(deg+r, .4 + Math.random() *.1);
+                entities.push(bullet);
+            }
+
+            this.hasFired = true;
+        }
+    }
+    Cannon.prototype = Object.create(VisualEntity.prototype);
+
+    function Particle(x, y) {
+        VisualEntity.call(this, x, y, 'particle');
+        this.dX = 0;
+        this.dY = 0;
+
+        this.setDirection = function(deg, vel) {
+            var rad = deg * Math.PI / 180;
+            this.dY = -Math.sin(rad) * vel;
+            this.dX = Math.cos(rad) * vel;
+        };
+
+        this.tick = function(dTime) {
+            this.dY += gravity * dTime;
+
+            this.y += this.dY*dTime;
+            this.x += this.dX*dTime;
+
+            if (this.x < 0 ||
+                this.x > width-5 ||
+                this.y > height-5) {
+                this.kill();
+            } else {
+                var s = this.element.style;
+                s.top = this.y + 'px';
+                s.left = this.x + 'px';
+            }
+        };
+    }
+    Particle.prototype = Object.create(VisualEntity.prototype);
+
+    var lastTime = -1;
+    function frame(timestamp) {
+        if (lastTime > 0) {
+            var dTime = timestamp - lastTime;
+
+            for (var i=entities.length-1; i>=0; i--) {
+                entities[i].tick(dTime);
+            }
+        }
+        lastTime = timestamp;
+        window.requestAnimationFrame(frame);
+    }
+    window.requestAnimationFrame(frame);
+
     window.announceNewFollowers = function(followers) {
-        /* Flashy things go here. */
+        for (var i = 0; i<5; i++) {
+            var y = height - 20;
+            var x = Math.random() * (width-20);
+            entities.push(new Cannon(x, y));
+        }
 
         followers.forEach(function(follower) {
             var div = document.createElement('div');

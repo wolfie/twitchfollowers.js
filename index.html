@@ -88,6 +88,7 @@ Need to use JSONP to circumvent cross site scripting protections
 
     function Entity(element) {
         this.element = element;
+        this.isAlive = true;
     }
 
     Entity.prototype.tick = function() {
@@ -98,25 +99,53 @@ Need to use JSONP to circumvent cross site scripting protections
         if (idx > -1) {
             entities.splice(idx, 1);
         }
+        this.isAlive = false;
     };
 
     function VisualEntity(x, y, classname) {
         Entity.call(this);
-
-        this.setPosition = function (x, y) {
-            this.x = x;
-            this.y = y;
-            this.element.style.top = y+'px';
-            this.element.style.left = x+'px';
-        };
+        this.halfWidth = 0;
+        this.halfHeight = 0;
+        this.x = 0;
+        this.y = 0;
 
         this.element = document.createElement('div');
         this.element.className = classname;
+
+        // todo: remove and require explicit attachment?
+        result.appendChild(this.element);
+        this.halfWidth = this.element.offsetWidth/2;
+        this.halfHeight = this.element.offsetHeight/2;
         this.setPosition(x, y);
-        result.appendChild(this.element); // todo: remove?
     }
 
     VisualEntity.prototype = Object.create(Entity.prototype);
+    VisualEntity.prototype.setPosition = function (x, y) {
+        this.x = x;
+        this.y = y;
+        this.element.style.top = (y-this.halfHeight)+'px';
+        this.element.style.left = (x-this.halfWidth)+'px';
+    };
+
+    VisualEntity.prototype.tick = function() {
+        if (!this.isAlive) {
+            return;
+        }
+
+        Entity.prototype.tick.call(this);
+
+        var left = this.x-this.halfWidth;
+        var right = this.x+this.halfWidth;
+        var top = this.y-this.halfHeight;
+        //var bottom = this.y+this.halfHeight;
+
+        // kill the entity if it's outside of the screen.
+        if (right < 0 ||
+            left > width ||
+            top > height) {
+            this.kill();
+        }
+    };
     VisualEntity.prototype.kill = function() {
         var parent = this.element.parentNode;
         if (parent) {
@@ -129,62 +158,54 @@ Need to use JSONP to circumvent cross site scripting protections
         VisualEntity.call(this, x, y, 'cannon');
         this.hasFired = false;
         this.timeToLive = 5000; // ms
-
-        this.tick = function(dTime) {
-            if (this.timeToLive < 0) {
-                this.kill();
-            } else {
-                this.timeToLive -= dTime;
-            }
-
-            if (this.hasFired) {
-                return;
-            }
-
-            var deg = 90 - (this.x/width - .5)*90 ;
-            var varDeg = 10;
-
-            for (var i=0; i<50; i++) {
-                var bullet = new Particle(this.x, this.y);
-                var r = (Math.random() * varDeg) - varDeg/2;
-                bullet.setDirection(deg+r, .4 + Math.random() *.1);
-                entities.push(bullet);
-            }
-
-            this.hasFired = true;
-        }
     }
     Cannon.prototype = Object.create(VisualEntity.prototype);
+    Cannon.prototype.tick = function(dTime) {
+        if (this.timeToLive < 0) {
+            this.kill();
+            return;
+        } else {
+            this.timeToLive -= dTime;
+        }
+
+        if (this.hasFired) {
+            return;
+        }
+
+        var deg = 90 - (this.x/width - .5)*90 ;
+        var varDeg = 10;
+
+        for (var i=0; i<50; i++) {
+            var bullet = new Particle(this.x, this.y);
+            var r = (Math.random() * varDeg) - varDeg/2;
+            bullet.setDirection(deg+r, .4 + Math.random() *.1);
+            entities.push(bullet);
+        }
+
+        this.hasFired = true;
+    };
+
 
     function Particle(x, y) {
         VisualEntity.call(this, x, y, 'particle');
         this.dX = 0;
         this.dY = 0;
-
-        this.setDirection = function(deg, vel) {
-            var rad = deg * Math.PI / 180;
-            this.dY = -Math.sin(rad) * vel;
-            this.dX = Math.cos(rad) * vel;
-        };
-
-        this.tick = function(dTime) {
-            this.dY += gravity * dTime;
-
-            this.y += this.dY*dTime;
-            this.x += this.dX*dTime;
-
-            if (this.x < 0 ||
-                this.x > width-5 ||
-                this.y > height-5) {
-                this.kill();
-            } else {
-                var s = this.element.style;
-                s.top = this.y + 'px';
-                s.left = this.x + 'px';
-            }
-        };
     }
     Particle.prototype = Object.create(VisualEntity.prototype);
+    Particle.prototype.setDirection = function(deg, vel) {
+        var rad = deg * Math.PI / 180;
+        this.dY = -Math.sin(rad) * vel;
+        this.dX = Math.cos(rad) * vel;
+    };
+    Particle.prototype.tick = function(dTime) {
+        VisualEntity.prototype.tick.call(this);
+        if (!this.isAlive) {
+            return;
+        }
+
+        this.dY += gravity * dTime;
+        this.setPosition(this.x + this.dX*dTime, this.y + this.dY*dTime);
+    };
 
     var lastTime = -1;
     function frame(timestamp) {

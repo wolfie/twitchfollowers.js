@@ -16,7 +16,7 @@
         color: white;
     }
 
-    .particle {
+    .confetto {
         width: 5px;
         height: 5px;
         background-color: red;
@@ -73,18 +73,20 @@ Need to use JSONP to circumvent cross site scripting protections
     var gravity = 0.001;
     var entities = [];
 
-    // TODO: remove example code:
-    var spawnerX = 20;
-    var intervalId = setInterval(function() {
-        entities.push(new Cannon(spawnerX, height/2));
-        spawnerX += 100;
-        spawnerX %= width;
-    }, 900);
-
     window.addEventListener('resize', function () {
         width = window.innerWidth;
         height = window.innerHeight;
     });
+
+
+    // TODO: remove example code:
+    var intervalId = setInterval(function() {
+        var cannons = 5;
+        var spread = width / cannons;
+        for (var i=0; i<cannons; i++) {
+            entities.push(new Cannon(spread/2 + spread*i, 0));
+        }
+    }, 3000);
 
     function Entity(element) {
         this.element = element;
@@ -154,58 +156,59 @@ Need to use JSONP to circumvent cross site scripting protections
         Entity.prototype.kill.call(this);
     };
 
-    function Cannon(x, y) {
-        VisualEntity.call(this, x, y, 'cannon');
-        this.hasFired = false;
-        this.timeToLive = 5000; // ms
-    }
-    Cannon.prototype = Object.create(VisualEntity.prototype);
-    Cannon.prototype.tick = function(dTime) {
-        if (this.timeToLive < 0) {
-            this.kill();
-            return;
-        } else {
-            this.timeToLive -= dTime;
-        }
-
-        if (this.hasFired) {
-            return;
-        }
-
-        var deg = 90 - (this.x/width - .5)*90 ;
-        var varDeg = 10;
-
-        for (var i=0; i<50; i++) {
-            var bullet = new Particle(this.x, this.y);
-            var r = (Math.random() * varDeg) - varDeg/2;
-            bullet.setDirection(deg+r, .4 + Math.random() *.1);
-            entities.push(bullet);
-        }
-
-        this.hasFired = true;
-    };
-
-
-    function Particle(x, y) {
-        VisualEntity.call(this, x, y, 'particle');
+    function GravityEntity(x, y, classname) {
+        VisualEntity.call(this, x, y, classname);
         this.dX = 0;
         this.dY = 0;
+        this.boundByGravity = true;
     }
-    Particle.prototype = Object.create(VisualEntity.prototype);
-    Particle.prototype.setDirection = function(deg, vel) {
+    GravityEntity.prototype = Object.create(VisualEntity.prototype);
+    GravityEntity.prototype.setDirection = function(deg, vel) {
         var rad = deg * Math.PI / 180;
         this.dY = -Math.sin(rad) * vel;
         this.dX = Math.cos(rad) * vel;
     };
-    Particle.prototype.tick = function(dTime) {
+    GravityEntity.prototype.tick = function(dTime) {
         VisualEntity.prototype.tick.call(this);
-        if (!this.isAlive) {
+        if (!this.isAlive || !this.boundByGravity) {
             return;
         }
 
         this.dY += gravity * dTime;
         this.setPosition(this.x + this.dX*dTime, this.y + this.dY*dTime);
     };
+
+    function Cannon(x, y) {
+        GravityEntity.call(this, x, y, 'cannon');
+        this.hasFired = false;
+        this.lifetime = 0;
+    }
+    Cannon.prototype = Object.create(GravityEntity.prototype);
+    Cannon.prototype.tick = function(dTime) {
+        GravityEntity.prototype.tick.call(this, dTime);
+        this.lifetime += dTime;
+
+        if (!this.hasFired && this.lifetime > 500) {
+            this.fire();
+            this.hasFired = true;
+        }
+    };
+    Cannon.prototype.fire = function() {
+        var deg = 90 - (this.x / width - .5) * 90;
+        var varDeg = 20;
+
+        for (var i = 0; i < 50; i++) {
+            var confetto = new Confetto(this.x, this.y);
+            var r = (Math.random() * varDeg) - varDeg / 2;
+            confetto.setDirection(deg + r, .6 + Math.random() * .1);
+            entities.push(confetto);
+        }
+    };
+
+    function Confetto(x, y) {
+        GravityEntity.call(this, x, y, 'confetto');
+    }
+    Confetto.prototype = Object.create(GravityEntity.prototype);
 
     var lastTime = -1;
     function frame(timestamp) {

@@ -183,6 +183,7 @@ Need to use JSONP to circumvent cross site scripting protections
         this.hasFired = false;
         this.lifetime = 0;
     }
+    Cannon.floor = height-200;
     Cannon.prototype = Object.create(GravityEntity.prototype);
     Cannon.prototype.tick = function(dTime) {
         GravityEntity.prototype.tick.call(this, dTime);
@@ -191,6 +192,10 @@ Need to use JSONP to circumvent cross site scripting protections
         if (!this.hasFired && this.lifetime > 500) {
             this.fire();
             this.hasFired = true;
+        }
+
+        if (this.y > Cannon.floor) {
+            this.setPosition(this.x, Cannon.floor);
         }
     };
     Cannon.prototype.fire = function() {

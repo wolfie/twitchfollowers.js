@@ -197,6 +197,10 @@ Need to use JSONP to circumvent cross site scripting protections
         if (this.y > Cannon.floor) {
             this.setPosition(this.x, Cannon.floor);
         }
+
+        if (this.lifetime > 2000) {
+            this.kill();
+        }
     };
     Cannon.prototype.fire = function() {
         var deg = 90 - (this.x / width - .5) * 90;

@@ -34,6 +34,7 @@ var width = window.innerWidth;
 var height = window.innerHeight;
 var gravity = 0.001;
 var entities = [];
+var nameplate = null;
 
 window.addEventListener('resize', function () {
     width = window.innerWidth;
@@ -182,6 +183,26 @@ function Confetto(x, y) {
 }
 Confetto.prototype = Object.create(GravityEntity.prototype);
 
+function Nameplate(follower) {
+    GravityEntity.call(this, width/2, height/2, 'nameplate');
+
+    this.follower = follower;
+    if (nameplate != null) {
+        throw "Nameplate already exists!";
+    }
+    nameplate = this;
+    this.boundByGravity = false;
+}
+Nameplate.prototype = Object.create(GravityEntity.prototype);
+Nameplate.prototype.kill = function() {
+    if (nameplate !== this) {
+        throw "Trying to kill nameplate, but the global one wasn't " +
+            "what was expected";
+    }
+    nameplate = null;
+    GravityEntity.prototype.kill.call(this);
+};
+
 var lastTime = -1;
 function frame(timestamp) {
     if (lastTime > 0) {
@@ -201,6 +222,11 @@ window.announceNewFollowers = function(followers) {
         var x = Math.random() * (width-20);
         entities.push(new Cannon(x, 0));
     }
+
+    var testingFollower = {
+        name: "Wolfie"
+    };
+    entities.push(new Nameplate(testingFollower));
 
     followers.forEach(function(follower) {
         var div = document.createElement('div');

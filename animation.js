@@ -74,7 +74,8 @@ function VisualEntity(x, y, classname) {
     this.y = 0;
 
     this.element = document.createElement('div');
-    this.element.className = classname;
+    this.element.classList.add('visualEntity');
+    this.element.classList.add(classname);
 
     // todo: remove and require explicit attachment?
     result.appendChild(this.element);

@@ -43,7 +43,7 @@ window.addEventListener('resize', function () {
 
 // TODO: remove example code:
 var intervalId = setInterval(function() {
-    var cannons = 5;
+    var cannons = 1;
     var spread = width / cannons;
     for (var i=0; i<cannons; i++) {
         entities.push(new Cannon(spread/2 + spread*i, 0));

@@ -153,7 +153,6 @@ function Cannon(x, y) {
     this.hasFired = false;
     this.lifetime = 0;
 }
-Cannon.floor = height-200;
 Cannon.prototype = Object.create(GravityEntity.prototype);
 Cannon.prototype.tick = function(dTime) {
     GravityEntity.prototype.tick.call(this, dTime);
@@ -164,8 +163,9 @@ Cannon.prototype.tick = function(dTime) {
         this.hasFired = true;
     }
 
-    if (this.y > Cannon.floor) {
-        this.setPosition(this.x, Cannon.floor);
+    if (nameplate != null && this.getBottom() > nameplate.getTop()) {
+        var newY = nameplate.getTop() - this.halfHeight;
+        this.setPosition(this.x, newY);
     }
 
     if (this.lifetime > 2000) {

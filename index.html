@@ -2,35 +2,35 @@
 <html>
 <head>
     <title>Twitch follower alerts</title>
+    <style>
+        html {
+            margin:0;
+            padding:0;
+            overflow: hidden;
+        }
+
+        #result .error {
+            background-color: red;
+            color: white;
+        }
+
+        .confetto {
+            width: 5px;
+            height: 5px;
+            background-color: red;
+            border-radius: 3px;
+            position: absolute;
+        }
+
+        .cannon {
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            position: absolute;
+        }
+    </style>
 </head>
 <body>
-<style>
-    html {
-        margin:0;
-        padding:0;
-        overflow: hidden;
-    }
-
-    #result .error {
-        background-color: red;
-        color: white;
-    }
-
-    .confetto {
-        width: 5px;
-        height: 5px;
-        background-color: red;
-        border-radius: 3px;
-        position: absolute;
-    }
-
-    .cannon {
-        width: 20px;
-        height: 20px;
-        background-color: black;
-        position: absolute;
-    }
-</style>
 
 <div id="result"></div>
 <!--

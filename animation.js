@@ -23,7 +23,7 @@
    - [ ] ...with a bang
  - [ ] open nameplate (3d rotations)
  - [x] drop cannons
-   - [ ] ...on top of nameplate
+   - [x] ...on top of nameplate
    - [ ] ...and then fire them
  - [ ] bounce cannons on impact
    - [ ] ...with rotation

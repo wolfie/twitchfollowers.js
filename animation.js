@@ -100,15 +100,10 @@ VisualEntity.prototype.tick = function() {
 
     Entity.prototype.tick.call(this);
 
-    var left = this.x-this.halfWidth;
-    var right = this.x+this.halfWidth;
-    var top = this.y-this.halfHeight;
-    //var bottom = this.y+this.halfHeight;
-
     // kill the entity if it's outside of the screen.
-    if (right < 0 ||
-        left > width ||
-        top > height) {
+    if (this.getRight() < 0 ||
+        this.getLeft() > width ||
+        this.getTop() > height) {
         this.kill();
     }
 };
@@ -118,6 +113,18 @@ VisualEntity.prototype.kill = function() {
         parent.removeChild(this.element);
     }
     Entity.prototype.kill.call(this);
+};
+VisualEntity.prototype.getTop = function() {
+    return this.y-this.halfHeight;
+};
+VisualEntity.prototype.getLeft = function() {
+    return this.x-this.halfWidth;
+};
+VisualEntity.prototype.getRight = function() {
+    return this.x+this.halfWidth;
+};
+VisualEntity.prototype.getBottom = function() {
+    return this.y+this.halfHeight;
 };
 
 function GravityEntity(x, y, classname) {

@@ -141,11 +141,10 @@ GravityEntity.prototype.setDirection = function(deg, vel) {
 };
 GravityEntity.prototype.tick = function(dTime) {
     VisualEntity.prototype.tick.call(this);
-    if (!this.isAlive || !this.boundByGravity) {
-        return;
+    if (this.boundByGravity) {
+        this.dY += gravity * dTime;
     }
 
-    this.dY += gravity * dTime;
     this.setPosition(this.x + this.dX*dTime, this.y + this.dY*dTime);
 };
 

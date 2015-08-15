@@ -40,6 +40,11 @@ Need to use JSONP to circumvent cross site scripting protections
 <div id="data"></div>
 
 <script>
+    /*
+    TODO:
+    - [ ] Notice if someone unfollows and another follows instead.
+    */
+
     window.announceNewFollowers = function(followers) {
         followers.forEach(function (follower) {
             var followdiv = document.createElement('div');

@@ -55,7 +55,7 @@ function Entity(element) {
     this.isAlive = true;
 }
 
-Entity.prototype.tick = function() {
+Entity.prototype.tick = function(dTime) {
 };
 
 Entity.prototype.kill = function() {

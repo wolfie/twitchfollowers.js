@@ -30,6 +30,27 @@
  - [ ] drop everything willy nilly
  */
 
+var style = document.createElement('style');
+style.appendChild(document.createTextNode('')); // webkit needs this?
+document.head.appendChild(style);
+var sheet = style.sheet;
+sheet.insertRule('.visualEntity {position: absolute}', 0);
+sheet.insertRule('.confetto {' +
+    'width: 5px;' +
+    'height: 5px;' +
+    'background-color: red;' +
+    'border-radius: 3px' +
+    '}', 1);
+sheet.insertRule('.cannon {' +
+    'width: 20px;' +
+    'height: 20px;' +
+    'background-color: black;' +
+    '}', 2);
+sheet.insertRule('.nameplate {' +
+    'width: 200px;' +
+    'height: 150px;' +
+    '}', 3);
+
 var width = window.innerWidth;
 var height = window.innerHeight;
 var gravity = 0.001;

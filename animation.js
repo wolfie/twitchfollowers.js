@@ -198,9 +198,8 @@ window.requestAnimationFrame(frame);
 
 window.announceNewFollowers = function(followers) {
     for (var i = 0; i<5; i++) {
-        var y = height - 20;
         var x = Math.random() * (width-20);
-        entities.push(new Cannon(x, y));
+        entities.push(new Cannon(x, 0));
     }
 
     followers.forEach(function(follower) {

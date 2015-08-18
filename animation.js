@@ -47,8 +47,9 @@ sheet.insertRule('.cannon {' +
     'background-color: black;' +
     '}', 2);
 sheet.insertRule('.nameplate {' +
-    'width: 200px;' +
+    'width: 400px;' +
     'height: 150px;' +
+    'background-color: grey;' +
     '}', 3);
 
 var width = window.innerWidth;

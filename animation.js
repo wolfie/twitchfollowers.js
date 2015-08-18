@@ -56,7 +56,6 @@ var width = window.innerWidth;
 var height = window.innerHeight;
 var gravity = 0.001;
 var entities = [];
-var nameplate = null;
 
 window.addEventListener('resize', function () {
     width = window.innerWidth;
@@ -175,8 +174,9 @@ Cannon.prototype.tick = function(dTime) {
         this.hasFired = true;
     }
 
-    if (nameplate != null && this.getBottom() > nameplate.getTop()) {
-        var newY = nameplate.getTop() - this.halfHeight;
+    var plate = Nameplate.instance;
+    if (plate != null && this.getBottom() > plate.getTop()) {
+        var newY = plate.getTop() - this.halfHeight;
         this.setPosition(this.x, newY);
     }
 
@@ -205,19 +205,20 @@ function Nameplate(follower) {
     GravityEntity.call(this, width/2, height/2, 'nameplate');
 
     this.follower = follower;
-    if (nameplate != null) {
+    if (Nameplate.instance != null) {
         throw "Nameplate already exists!";
     }
-    nameplate = this;
+    Nameplate.instance = this;
     this.boundByGravity = false;
 }
+Nameplate.instance = null;
 Nameplate.prototype = Object.create(GravityEntity.prototype);
 Nameplate.prototype.kill = function() {
-    if (nameplate !== this) {
+    if (Nameplate.instance !== this) {
         throw "Trying to kill nameplate, but the global one wasn't " +
             "what was expected";
     }
-    nameplate = null;
+    Nameplate.instance = null;
     GravityEntity.prototype.kill.call(this);
 };
 

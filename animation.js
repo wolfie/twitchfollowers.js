@@ -62,16 +62,6 @@ window.addEventListener('resize', function () {
     height = window.innerHeight;
 });
 
-
-// TODO: remove example code:
-var intervalId = setInterval(function() {
-    var cannons = 1;
-    var spread = width / cannons;
-    for (var i=0; i<cannons; i++) {
-        entities.push(new Cannon(spread/2 + spread*i, 0));
-    }
-}, 3000);
-
 function Entity(element) {
     this.element = element;
     this.isAlive = true;

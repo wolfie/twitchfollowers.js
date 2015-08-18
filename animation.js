@@ -221,6 +221,9 @@ Nameplate.prototype.kill = function() {
     Nameplate.instance = null;
     GravityEntity.prototype.kill.call(this);
 };
+Nameplate.prototype.drop = function() {
+    this.boundByGravity = true;
+};
 
 var lastTime = -1;
 function frame(timestamp) {

@@ -177,12 +177,10 @@ GravityEntity.prototype.tick = function(dTime) {
 function Cannon(x, y) {
     GravityEntity.call(this, x, y, 'cannon');
     this.hasFired = false;
-    this.lifetime = 0;
 }
 Cannon.prototype = Object.create(GravityEntity.prototype);
 Cannon.prototype.tick = function(dTime) {
     GravityEntity.prototype.tick.call(this, dTime);
-    this.lifetime += dTime;
 
     if (!this.hasFired && this.lifetime > 500) {
         this.fire();
@@ -193,10 +191,6 @@ Cannon.prototype.tick = function(dTime) {
     if (plate != null && this.getBottom() > plate.getTop()) {
         var newY = plate.getTop() - this.halfHeight;
         this.setPosition(this.x, newY);
-    }
-
-    if (this.lifetime > 2000) {
-        this.kill();
     }
 };
 Cannon.prototype.fire = function() {
@@ -221,14 +215,16 @@ Confetto.prototype = Object.create(GravityEntity.prototype);
  * @constructor
  */
 function Nameplate(follower) {
-    GravityEntity.call(this, width/2, height/2, 'nameplate');
+    GravityEntity.call(this, 0, 0, 'nameplate');
+    this.lifetime = 0;
+    this.boundByGravity = false;
 
-    this.follower = follower;
     if (Nameplate.instance != null) {
         throw "Nameplate already exists!";
     }
     Nameplate.instance = this;
-    this.boundByGravity = false;
+
+    this.setPosition(width/2, height+this.halfHeight);
 
     if (follower.notified) {
         this.element.classList.add('notified');
@@ -248,7 +244,23 @@ function Nameplate(follower) {
 }
 
 Nameplate.instance = null;
+Nameplate.buildDuration = 500;
+Nameplate.droptime = 2000;
 Nameplate.prototype = Object.create(GravityEntity.prototype);
+Nameplate.prototype.tick = function(dTime) {
+    GravityEntity.prototype.tick.call(this, dTime);
+
+    this.lifetime += dTime;
+    if (!this.boundByGravity && this.lifetime < Nameplate.buildDuration) {
+        var progress = (this.lifetime / Nameplate.buildDuration);
+        var newY = (height / 2) + (((height/2)+this.halfHeight) * (1-progress));
+        this.setPosition(this.x, newY);
+    }
+
+    if (this.lifetime > Nameplate.droptime) {
+        this.drop();
+    }
+};
 Nameplate.prototype.kill = function() {
     if (Nameplate.instance !== this) {
         throw "Trying to kill nameplate, but the global one wasn't " +

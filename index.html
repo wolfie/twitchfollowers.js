@@ -161,8 +161,7 @@ Need to use JSONP to circumvent cross site scripting protections
         window.onhashchange = function() { window.location.reload() };
 
         if (!channel) {
-            error('Channel name needs to be in the hash');
-            return;
+            window.location.hash = window.prompt("Which channel to listen to?")
         }
 
         start();

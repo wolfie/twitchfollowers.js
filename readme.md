@@ -11,6 +11,18 @@ a pound sign (e.g. `index.html#gowolfie`).
 The check is done periodically every so-many minutes, and therefore there might be several followers per
 cycle.
 
+## How Does it Work?
+
+Technically, roughly speaking:
+
+1. `channel` := hash fraction in URI
+1. `followers` := current count of followers for `channel`
+1. sleep
+1. `newFollowers` := all followers for `channel` after `followers` offset
+1. if `newFollowers` is empty goto Step 3
+1. display each name in `newFollowers`
+1. goto Step 3
+
 ## Hooks
 
 **`<div id='result'></div>`** is the element that is reserved for displaying whatever 

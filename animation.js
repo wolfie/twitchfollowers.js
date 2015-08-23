@@ -236,13 +236,13 @@ function Nameplate(follower) {
 
     if (follower.logo) {
         var logoImg = document.createElement('img');
-        logoImg.classList.add('logo')
+        logoImg.classList.add('logo');
         logoImg.src = follower.logo;
         this.element.appendChild(logoImg);
     }
 
     var name = document.createElement('div');
-    name.classList.add('name')
+    name.classList.add('name');
     name.textContent = follower.name;
     this.element.appendChild(name);
 }

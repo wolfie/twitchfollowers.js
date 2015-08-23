@@ -50,7 +50,22 @@ sheet.insertRule('.nameplate {' +
     'width: 400px;' +
     'height: 150px;' +
     'background-color: grey;' +
+    'display: flex;' +
+    'flex-direction: row;' +
+    'align-items: center;' +
     '}', 3);
+sheet.insertRule('.nameplate.notified {' +
+    'background-color: gold;' +
+    '}', 4);
+sheet.insertRule('.nameplate .logo {' +
+    'max-height: 64px;' +
+    'max-width: 64px;' +
+    'padding: 20px;' +
+    '}', 5);
+sheet.insertRule('.nameplate .name {' +
+    'flex-grow: 1;' +
+    'flex-shrink: 0;' +
+    '}', 6);
 
 var width = window.innerWidth;
 var height = window.innerHeight;
@@ -201,6 +216,10 @@ function Confetto(x, y) {
 }
 Confetto.prototype = Object.create(GravityEntity.prototype);
 
+/**
+ * @param {Follower} follower
+ * @constructor
+ */
 function Nameplate(follower) {
     GravityEntity.call(this, width/2, height/2, 'nameplate');
 
@@ -210,7 +229,24 @@ function Nameplate(follower) {
     }
     Nameplate.instance = this;
     this.boundByGravity = false;
+
+    if (follower.notified) {
+        this.element.classList.add('notified');
+    }
+
+    if (follower.logo) {
+        var logoImg = document.createElement('img');
+        logoImg.classList.add('logo')
+        logoImg.src = follower.logo;
+        this.element.appendChild(logoImg);
+    }
+
+    var name = document.createElement('div');
+    name.classList.add('name')
+    name.textContent = follower.name;
+    this.element.appendChild(name);
 }
+
 Nameplate.instance = null;
 Nameplate.prototype = Object.create(GravityEntity.prototype);
 Nameplate.prototype.kill = function() {
@@ -245,9 +281,14 @@ window.announceNewFollowers = function(followers) {
         entities.push(new Cannon(x, 0));
     }
 
-    var testingFollower = {
-        name: "Wolfie"
-    };
+    var testingFollower = new Follower({
+        user: {
+            display_name: "Wolfie",
+            logo: "http://static-cdn.jtvnw.net/jtv_user_pictures/gowolfie-profile_image-552fee08030a7106-300x300.jpeg",
+        },
+        notifications: true,
+    });
+
     entities.push(new Nameplate(testingFollower));
 
     followers.forEach(function(follower) {

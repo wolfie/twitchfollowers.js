@@ -19,7 +19,7 @@
  - [ ] particles
  - [ ] font for follower name
  - actions (~5secs)
- - [ ] add nameplate
+ - [x] add nameplate
    - [ ] ...with a bang
  - [ ] open nameplate (3d rotations)
  - [x] drop cannons

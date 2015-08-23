@@ -3,7 +3,7 @@
  - [ ] don't call requestAnimationFrame if nothing
        needs to be animated.
  - [ ] how to display multiple followers at once?
- - [ ] cannon distribution on top of nameplate?
+ - [x] cannon distribution on top of nameplate?
  - [ ] convert to <canvas> to avoid frame tick?
  - audio
  - [ ] <audio>

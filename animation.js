@@ -253,7 +253,7 @@ Nameplate.prototype.tick = function(dTime) {
     this.lifetime += dTime;
     if (!this.boundByGravity && this.lifetime < Nameplate.buildDuration) {
         var progress = (this.lifetime / Nameplate.buildDuration);
-        var newY = (height / 2) + (((height/2)+this.halfHeight) * (1-progress));
+        var newY = height + this.halfHeight - (300 * progress);
         this.setPosition(this.x, newY);
     }
 

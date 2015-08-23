@@ -255,7 +255,7 @@ function Nameplate(follower) {
 
 Nameplate.instance = null;
 Nameplate.buildDuration = 500;
-Nameplate.droptime = 2000;
+Nameplate.droptime = 5000;
 Nameplate.prototype = Object.create(GravityEntity.prototype);
 Nameplate.prototype.tick = function(dTime) {
     GravityEntity.prototype.tick.call(this, dTime);

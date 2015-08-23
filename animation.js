@@ -299,11 +299,6 @@ function frame(timestamp) {
 window.requestAnimationFrame(frame);
 
 window.announceNewFollowers = function(followers) {
-    for (var i = 0; i<5; i++) {
-        var x = Math.random() * (width-20);
-        entities.push(new Cannon(x, 0));
-    }
-
     var testingFollower = new Follower({
         user: {
             display_name: "Wolfie",
@@ -313,6 +308,15 @@ window.announceNewFollowers = function(followers) {
     });
 
     entities.push(new Nameplate(testingFollower));
+    var minX = Nameplate.instance.x - Nameplate.instance.halfWidth;
+    var maxX = Nameplate.instance.x + Nameplate.instance.halfWidth;
+
+    var cannons = 5;
+    var part = (maxX-minX) / (cannons-1);
+    for (var i = 0; i<cannons; i++) {
+        var x = part * i;
+        entities.push(new Cannon(minX+x, 0));
+    }
 
     followers.forEach(function(follower) {
         var div = document.createElement('div');

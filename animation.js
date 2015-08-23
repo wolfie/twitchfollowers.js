@@ -24,7 +24,7 @@
  - [ ] open nameplate (3d rotations)
  - [x] drop cannons
    - [x] ...on top of nameplate
-   - [ ] ...and then fire them
+   - [x] ...and then fire them
  - [ ] bounce cannons on impact
    - [ ] ...with rotation
  - [ ] drop everything willy nilly
@@ -177,7 +177,9 @@ GravityEntity.prototype.tick = function(dTime) {
 function Cannon(x, y) {
     GravityEntity.call(this, x, y, 'cannon');
     this.hasFired = false;
+    this.restTime = 0;
 }
+Cannon.idleShootDelay = 500;
 Cannon.prototype = Object.create(GravityEntity.prototype);
 Cannon.prototype.tick = function(dTime) {
     GravityEntity.prototype.tick.call(this, dTime);
@@ -191,6 +193,14 @@ Cannon.prototype.tick = function(dTime) {
     if (plate != null && this.getBottom() > plate.getTop()) {
         var newY = plate.getTop() - this.halfHeight;
         this.setPosition(this.x, newY);
+        this.restTime += dTime;
+
+        if (!this.hasFired && this.restTime > Cannon.idleShootDelay) {
+            this.fire();
+            this.hasFired = true;
+        }
+    } else {
+        this.restTime = 0;
     }
 };
 Cannon.prototype.fire = function() {

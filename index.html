@@ -13,23 +13,6 @@
             background-color: red;
             color: white;
         }
-
-        .visualEntity {
-            position: absolute;
-        }
-
-        .confetto {
-            width: 5px;
-            height: 5px;
-            background-color: red;
-            border-radius: 3px;
-        }
-
-        .cannon {
-            width: 20px;
-            height: 20px;
-            background-color: black;
-        }
     </style>
 </head>
 <body>
@@ -43,9 +26,20 @@ Need to use JSONP to circumvent cross site scripting protections
 
 <script>
     /*
-    TODO:
-    - [ ] Notice if someone unfollows and another follows instead.
+    TODO: Notice if someone unfollows and another follows instead.
     */
+
+    function Follower(twitchData) {
+        this.name = "";
+        this.logo = null;
+        this.notified = false;
+
+        if (twitchData) {
+            this.name = twitchData.user.display_name;
+            this.logo = twitchData.user.logo;
+            this.notified = twitchData.notifications;
+        }
+    }
 
     window.announceNewFollowers = function(followers) {
         followers.forEach(function (follower) {
@@ -57,17 +51,9 @@ Need to use JSONP to circumvent cross site scripting protections
     };
 
     window.announceNewFollowersRaw = function(result) {
-        var getFollower = function(follower) {
-            return {
-                name: follower.user.display_name,
-                logo: follower.user.logo,
-                notifications: follower.notifications,
-            };
-        };
-
         var followers = [];
-        result.follows.forEach(function(follower) {
-            followers.push(getFollower(follower));
+        result.follows.forEach(function(followerData) {
+            followers.push(new Follower(followerData));
         });
         window.announceNewFollowers(followers);
     };

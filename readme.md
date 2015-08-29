@@ -36,3 +36,9 @@ is an object formatted according to [the Twitch API documentation][doc] containi
 **`window.announceNewFollowers`** is called, by the function above, with the difference that the
 argument is just an array of the new follower(s), represented by objects with three properties: 
 `name`, `logo`, and `notifications`.
+
+# Attributions
+
+Sound effects: 
+
+ * [Cannon](http://soundbible.com/909-Cannon.html)

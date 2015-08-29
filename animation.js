@@ -3,6 +3,7 @@
  TODO: how to display multiple followers at once?
  DONE: cannon distribution on top of nameplate?
  TODO: convert to <canvas> to avoid frame tick?
+ TODO: Split tick into graphics and physics
  # AUDIO
      TODO: <audio>
      TODO: nameplate thunk

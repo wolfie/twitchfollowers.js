@@ -25,7 +25,7 @@
        DONE: ...and then fire them
        TODO: ...but in a synchronized manner
      DONE: bounce cannons on impact
-       TODO: ...with rotation
+       DONE: ...with rotation
      TODO: drop everything willy nilly
        TODO: ...cannons
        TODO: ...nameplate

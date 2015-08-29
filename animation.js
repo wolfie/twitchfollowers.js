@@ -5,7 +5,7 @@
  TODO: convert to <canvas> to avoid frame tick?
  TODO: Split tick into graphics and physics
  # AUDIO
-     TODO: <audio>
+     DONE: <audio>
      TODO: nameplate thunk
      TODO: nameplate open thunk (same?)
      TODO: cannon shoot
@@ -306,6 +306,19 @@ Nameplate.prototype.kill = function() {
 };
 Nameplate.prototype.drop = function() {
     this.boundByGravity = true;
+};
+
+function AudioEntity(soundfile) {
+    Entity.call(this, document.createElement('audio'));
+    this.soundURI = soundfile;
+}
+AudioEntity.prototype = Object.create(Entity.prototype);
+AudioEntity.prototype.attach = function() {
+    this.element.src = this.soundURI;
+    Entity.prototype.attach.call(this);
+};
+AudioEntity.prototype.play = function() {
+    this.element.play();
 };
 
 var lastTime = -1;

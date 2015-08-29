@@ -8,7 +8,7 @@
      DONE: <audio>
      TODO: nameplate thunk
      TODO: nameplate open thunk (same?)
-     TODO: cannon shoot
+     DONE: cannon shoot
      TODO: cannon drop?
  # GRAPHICS
      TODO: cannon
@@ -183,6 +183,9 @@ function Cannon(x, y) {
     this.restTime = 0;
     this.rotationRate = 0;
     this.rotation = 0;
+
+    this.sound = new AudioEntity('sfx/cannon.mp3');
+    this.sound.attach();
 }
 Cannon.idleShootDelay = 500;
 Cannon.restThreshold = 0.1;
@@ -237,8 +240,14 @@ Cannon.prototype.fire = function() {
         var r = (Math.random() * varDeg) - varDeg / 2;
         confetto.setDirection(deg + r, .6 + Math.random() * .1);
         confetto.attach();
+        this.sound.play();
     }
 };
+Cannon.prototype.kill = function() {
+    this.sound.kill();
+    VisualEntity.prototype.kill.call(this);
+};
+
 function Confetto(x, y) {
     GravityEntity.call(this, x, y, 'confetto');
 }
@@ -326,8 +335,14 @@ function frame(timestamp) {
     if (lastTime > 0) {
         var dTime = timestamp - lastTime;
 
+        /*
+        Without a defensive copy, we would have
+        concurrent modifications. And we'd have a
+        bad time.
+         */
+        var entitiesCopy = entities.slice();
         for (var i=entities.length-1; i>=0; i--) {
-            entities[i].tick(dTime);
+            entitiesCopy[i].tick(dTime);
         }
     }
     lastTime = timestamp;

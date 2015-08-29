@@ -182,11 +182,6 @@ Cannon.prototype = Object.create(GravityEntity.prototype);
 Cannon.prototype.tick = function(dTime) {
     GravityEntity.prototype.tick.call(this, dTime);
 
-    if (!this.hasFired && this.lifetime > 500) {
-        this.fire();
-        this.hasFired = true;
-    }
-
     var plate = Nameplate.instance;
     if (plate != null && this.getBottom() > plate.getTop()) {
 

@@ -93,24 +93,23 @@ Entity.prototype.kill = function() {
         entities.splice(idx, 1);
     }
     this.isAlive = false;
+    result.removeChild(this.element);
+};
+Entity.prototype.attach = function() {
+    entities.push(this);
+    result.appendChild(this.element);
 };
 
 function VisualEntity(x, y, classname) {
-    Entity.call(this);
+    Entity.call(this, document.createElement('div'));
     this.halfWidth = 0;
     this.halfHeight = 0;
-    this.x = 0;
-    this.y = 0;
+    this.x = x;
+    this.y = y;
 
-    this.element = document.createElement('div');
     this.element.classList.add('visualEntity');
     this.element.classList.add(classname);
 
-    // todo: remove and require explicit attachment?
-    result.appendChild(this.element);
-    this.halfWidth = this.element.offsetWidth/2;
-    this.halfHeight = this.element.offsetHeight/2;
-    this.setPosition(x, y);
 }
 
 VisualEntity.prototype = Object.create(Entity.prototype);
@@ -135,11 +134,13 @@ VisualEntity.prototype.tick = function() {
         this.kill();
     }
 };
+VisualEntity.prototype.attach = function() {
+    Entity.prototype.attach.call(this);
+    this.halfWidth = this.element.offsetWidth/2;
+    this.halfHeight = this.element.offsetHeight/2;
+    this.setPosition(this.x, this.y);
+};
 VisualEntity.prototype.kill = function() {
-    var parent = this.element.parentNode;
-    if (parent) {
-        parent.removeChild(this.element);
-    }
     Entity.prototype.kill.call(this);
 };
 VisualEntity.prototype.getTop = function() {
@@ -235,10 +236,9 @@ Cannon.prototype.fire = function() {
         var confetto = new Confetto(this.x, this.y);
         var r = (Math.random() * varDeg) - varDeg / 2;
         confetto.setDirection(deg + r, .6 + Math.random() * .1);
-        entities.push(confetto);
+        confetto.attach();
     }
 };
-
 function Confetto(x, y) {
     GravityEntity.call(this, x, y, 'confetto');
 }
@@ -335,7 +335,7 @@ window.announceNewFollowers = function(followers) {
         notifications: true,
     });
 
-    entities.push(new Nameplate(testingFollower));
+    new Nameplate(testingFollower).attach();
     var minX = Nameplate.instance.x - Nameplate.instance.halfWidth;
     var maxX = Nameplate.instance.x + Nameplate.instance.halfWidth;
 
@@ -343,7 +343,7 @@ window.announceNewFollowers = function(followers) {
     var part = (maxX-minX) / (cannons-1);
     for (var i = 0; i<cannons; i++) {
         var x = part * i;
-        entities.push(new Cannon(minX+x, 0));
+        new Cannon(minX+x, 0).attach();
     }
 
     followers.forEach(function(follower) {

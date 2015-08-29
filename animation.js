@@ -186,7 +186,7 @@ Cannon.prototype.tick = function(dTime) {
     if (plate != null && this.getBottom() > plate.getTop()) {
 
         if (this.dY > 0.01) {
-            this.dY *= -0.5;
+            this.dY *= -0.5 + Math.random()/5;
         } else {
             this.dY = 0;
         }

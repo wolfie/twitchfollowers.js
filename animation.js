@@ -23,7 +23,7 @@
      DONE: drop cannons
        DONE: ...on top of nameplate
        DONE: ...and then fire them
-     TODO: bounce cannons on impact
+     DONE: bounce cannons on impact
        TODO: ...with rotation
      TODO: drop everything willy nilly
  */
@@ -189,9 +189,21 @@ Cannon.prototype.tick = function(dTime) {
 
     var plate = Nameplate.instance;
     if (plate != null && this.getBottom() > plate.getTop()) {
+
+        if (this.dY > 0.01) {
+            this.dY *= -0.5;
+        } else {
+            this.dY = 0;
+        }
+
+        if (Math.abs(this.dY) < 0.01) {
+            this.restTime += dTime;
+        } else {
+            this.restTime = 0;
+        }
+
         var newY = plate.getTop() - this.halfHeight;
         this.setPosition(this.x, newY);
-        this.restTime += dTime;
 
         if (!this.hasFired && this.restTime > Cannon.idleShootDelay) {
             this.fire();

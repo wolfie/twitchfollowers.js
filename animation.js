@@ -27,6 +27,8 @@
      DONE: bounce cannons on impact
        TODO: ...with rotation
      TODO: drop everything willy nilly
+       TODO: ...cannons
+       TODO: ...nameplate
  */
 
 var style = document.createElement('style');
@@ -177,8 +179,11 @@ function Cannon(x, y) {
     GravityEntity.call(this, x, y, 'cannon');
     this.hasFired = false;
     this.restTime = 0;
+    this.rotationRate = 0;
+    this.rotation = 0;
 }
 Cannon.idleShootDelay = 500;
+Cannon.restThreshold = 0.1;
 Cannon.prototype = Object.create(GravityEntity.prototype);
 Cannon.prototype.tick = function(dTime) {
     GravityEntity.prototype.tick.call(this, dTime);
@@ -186,16 +191,25 @@ Cannon.prototype.tick = function(dTime) {
     var plate = Nameplate.instance;
     if (plate != null && this.getBottom() > plate.getTop()) {
 
-        if (this.dY > 0.01) {
-            this.dY *= -0.5 + Math.random()/5;
-        } else {
-            this.dY = 0;
-        }
-
-        if (Math.abs(this.dY) < 0.01) {
+        if (Math.abs(this.dY) < Cannon.restThreshold) {
             this.restTime += dTime;
+            this.rotationRate = 0;
+            this.rotation = 0;
         } else {
             this.restTime = 0;
+        }
+
+        if (this.dY > Cannon.restThreshold ) {
+            this.dY *= -0.7 + Math.random()/5;
+
+            if (this.rotationRate === 0) {
+                this.rotationRate = Math.random()*120-60;
+            } else {
+                this.rotationRate *= -1;
+            }
+            this.rotation = 0;
+        } else {
+            this.dY = 0;
         }
 
         var newY = plate.getTop() - this.halfHeight;
@@ -208,6 +222,9 @@ Cannon.prototype.tick = function(dTime) {
     } else {
         this.restTime = 0;
     }
+
+    this.rotation += this.rotationRate * dTime/1000;
+    this.element.style.transform = 'rotate('+this.rotation+'deg)';
 };
 Cannon.prototype.fire = function() {
     var deg = 90 - (this.x / width - .5) * 90;

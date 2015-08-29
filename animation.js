@@ -1,33 +1,31 @@
 /*
- TODO:
- - [ ] don't call requestAnimationFrame if nothing
-       needs to be animated.
- - [ ] how to display multiple followers at once?
- - [x] cannon distribution on top of nameplate?
- - [ ] convert to <canvas> to avoid frame tick?
- - audio
- - [ ] <audio>
- - [ ] nameplate thunk
- - [ ] nameplate open thunk (same?)
- - [ ] cannon shoot
- - [ ] cannon drop?
- - graphics
- - [ ] cannon
- - [ ] muzzle flare / explosion
- - [ ] nameplate backplate
- - [ ] nameplate cover
- - [ ] particles
- - [ ] font for follower name
- - actions (~5secs)
- - [x] add nameplate
-   - [ ] ...with a bang
- - [ ] open nameplate (3d rotations)
- - [x] drop cannons
-   - [x] ...on top of nameplate
-   - [x] ...and then fire them
- - [ ] bounce cannons on impact
-   - [ ] ...with rotation
- - [ ] drop everything willy nilly
+ TODO: don't call requestAnimationFrame if nothing needs to be animated.
+ TODO: how to display multiple followers at once?
+ DONE: cannon distribution on top of nameplate?
+ TODO: convert to <canvas> to avoid frame tick?
+ # AUDIO
+     TODO: <audio>
+     TODO: nameplate thunk
+     TODO: nameplate open thunk (same?)
+     TODO: cannon shoot
+     TODO: cannon drop?
+ # GRAPHICS
+     TODO: cannon
+     TODO: muzzle flare / explosion
+     TODO: nameplate backplate
+     TODO: nameplate cover
+     TODO: particles
+     TODO: font for follower name
+ # ACTIONS
+     DONE: add nameplate
+       TODO: ...with a bang
+     TODO: open nameplate (3d rotations)
+     DONE: drop cannons
+       DONE: ...on top of nameplate
+       DONE: ...and then fire them
+     TODO: bounce cannons on impact
+       TODO: ...with rotation
+     TODO: drop everything willy nilly
  */
 
 var style = document.createElement('style');

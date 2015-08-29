@@ -297,6 +297,10 @@ function frame(timestamp) {
 window.requestAnimationFrame(frame);
 
 window.announceNewFollowers = function(followers) {
+    if (!followers) {
+        followers = [];
+    }
+
     var testingFollower = new Follower({
         user: {
             display_name: "Wolfie",

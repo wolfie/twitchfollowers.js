@@ -1,6 +1,6 @@
 /*
  TODO: don't call requestAnimationFrame if nothing needs to be animated.
- TODO: how to display multiple followers at once?
+ DONE: how to display multiple followers at once?
  DONE: cannon distribution on top of nameplate?
  TODO: convert to <canvas> to avoid frame tick?
  TODO: Split tick into graphics and physics
@@ -74,6 +74,7 @@ var width = window.innerWidth;
 var height = window.innerHeight;
 var gravity = 0.001;
 var entities = [];
+var doneCallback = null;
 
 window.addEventListener('resize', function () {
     width = window.innerWidth;
@@ -327,6 +328,16 @@ Nameplate.prototype.kill = function() {
     }
     Nameplate.instance = null;
     GravityEntity.prototype.kill.call(this);
+
+    if (!doneCallback) {
+        throw "No valid done callback registered";
+    }
+
+    setTimeout(function() {
+        var done = doneCallback;
+        doneCallback = null;
+        done();
+    }, 500);
 };
 Nameplate.prototype.drop = function() {
     this.boundByGravity = true;
@@ -367,32 +378,17 @@ function frame(timestamp) {
 }
 window.requestAnimationFrame(frame);
 
-window.announceNewFollowers = function(followers) {
-    if (!followers) {
-        followers = [];
-    }
+window.announceNewFollower = function(follower, done) {
+    doneCallback = done;
+    new Nameplate(follower).attach();
+    var minX = Nameplate.instance.x - Nameplate.instance.halfWidth;
+    var maxX = Nameplate.instance.x + Nameplate.instance.halfWidth;
 
-    if (followers.length > 1) {
-        // for now, let's cheat on the many-followers-per-check...
-        followers.forEach(function(follower) {
-            var div = document.createElement('div');
-            div.textContent = follower.name;
-            result.appendChild(div);
-        });
-    }
-
-    else {
-        var follower = followers[0];
-        new Nameplate(follower).attach();
-        var minX = Nameplate.instance.x - Nameplate.instance.halfWidth;
-        var maxX = Nameplate.instance.x + Nameplate.instance.halfWidth;
-
-        var cannons = 5;
-        var part = (maxX-minX) / (cannons-1);
-        for (var i = 0; i<cannons; i++) {
-            var x = part * i;
-            new Cannon(minX+x, 0).attach();
-        }
+    var cannons = 5;
+    var part = (maxX-minX) / (cannons-1);
+    for (var i = 0; i<cannons; i++) {
+        var x = part * i;
+        new Cannon(minX+x, 0).attach();
     }
 };
 

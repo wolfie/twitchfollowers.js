@@ -9,7 +9,7 @@
      TODO: nameplate thunk
      TODO: nameplate open thunk (same?)
      DONE: cannon shoot
-     TODO: cannon drop?
+     DONE: cannon drop
  # GRAPHICS
      TODO: cannon
      TODO: muzzle flare / explosion
@@ -185,7 +185,9 @@ function Cannon(x, y) {
     this.rotation = 0;
 
     this.sound_fire = new AudioEntity('sfx/cannon_fire.mp3');
+    this.sound_impact = new AudioEntity('sfx/cannon_impact.wav');
     this.sound_fire.attach();
+    this.sound_impact.attach();
 }
 Cannon.idleShootDelay = 500;
 Cannon.restThreshold = 0.1;
@@ -204,6 +206,7 @@ Cannon.prototype.tick = function(dTime) {
             this.restTime = 0;
         }
 
+        // check if the cannon bounces
         if (this.dY > Cannon.restThreshold ) {
             this.dY *= -0.7 + Math.random()/5;
 
@@ -213,6 +216,7 @@ Cannon.prototype.tick = function(dTime) {
                 this.rotationRate *= -1;
             }
             this.rotation = 0;
+            this.sound_impact.play();
         } else {
             this.dY = 0;
         }
@@ -245,6 +249,7 @@ Cannon.prototype.fire = function() {
 };
 Cannon.prototype.kill = function() {
     this.sound_fire.kill();
+    this.sound_impact.kill();
     VisualEntity.prototype.kill.call(this);
 };
 
@@ -327,6 +332,8 @@ AudioEntity.prototype.attach = function() {
     Entity.prototype.attach.call(this);
 };
 AudioEntity.prototype.play = function() {
+    this.element.pause();
+    this.element.currentTime = 0;
     this.element.play();
 };
 

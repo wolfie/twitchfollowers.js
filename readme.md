@@ -41,4 +41,4 @@ argument is just an array of the new follower(s), represented by objects with th
 
 Sound effects: 
 
- * [Cannon](http://soundbible.com/909-Cannon.html)
+ * [Cannon fire](http://soundbible.com/909-Cannon.html)

@@ -184,8 +184,8 @@ function Cannon(x, y) {
     this.rotationRate = 0;
     this.rotation = 0;
 
-    this.sound = new AudioEntity('sfx/cannon.mp3');
-    this.sound.attach();
+    this.sound_fire = new AudioEntity('sfx/cannon_fire.mp3');
+    this.sound_fire.attach();
 }
 Cannon.idleShootDelay = 500;
 Cannon.restThreshold = 0.1;
@@ -240,11 +240,11 @@ Cannon.prototype.fire = function() {
         var r = (Math.random() * varDeg) - varDeg / 2;
         confetto.setDirection(deg + r, .6 + Math.random() * .1);
         confetto.attach();
-        this.sound.play();
+        this.sound_fire.play();
     }
 };
 Cannon.prototype.kill = function() {
-    this.sound.kill();
+    this.sound_fire.kill();
     VisualEntity.prototype.kill.call(this);
 };
 

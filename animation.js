@@ -20,6 +20,7 @@
  # ACTIONS
      DONE: add nameplate
        TODO: ...with a bang
+       DONE: ...with the real follower info
      TODO: open nameplate (3d rotations)
      DONE: drop cannons
        DONE: ...on top of nameplate
@@ -365,6 +366,31 @@ window.announceNewFollowers = function(followers) {
         followers = [];
     }
 
+    if (followers.length > 1) {
+        // for now, let's cheat on the many-followers-per-check...
+        followers.forEach(function(follower) {
+            var div = document.createElement('div');
+            div.textContent = follower.name;
+            result.appendChild(div);
+        });
+    }
+
+    else {
+        var follower = followers[0]
+        new Nameplate(follower).attach();
+        var minX = Nameplate.instance.x - Nameplate.instance.halfWidth;
+        var maxX = Nameplate.instance.x + Nameplate.instance.halfWidth;
+
+        var cannons = 5;
+        var part = (maxX-minX) / (cannons-1);
+        for (var i = 0; i<cannons; i++) {
+            var x = part * i;
+            new Cannon(minX+x, 0).attach();
+        }
+    }
+};
+
+window.testOne = function() {
     var testingFollower = new Follower({
         user: {
             display_name: "Wolfie",
@@ -373,20 +399,5 @@ window.announceNewFollowers = function(followers) {
         notifications: true,
     });
 
-    new Nameplate(testingFollower).attach();
-    var minX = Nameplate.instance.x - Nameplate.instance.halfWidth;
-    var maxX = Nameplate.instance.x + Nameplate.instance.halfWidth;
-
-    var cannons = 5;
-    var part = (maxX-minX) / (cannons-1);
-    for (var i = 0; i<cannons; i++) {
-        var x = part * i;
-        new Cannon(minX+x, 0).attach();
-    }
-
-    followers.forEach(function(follower) {
-        var div = document.createElement('div');
-        div.textContent = follower.name;
-        result.appendChild(div);
-    });
+    window.announceNewFollowers([testingFollower]);
 };

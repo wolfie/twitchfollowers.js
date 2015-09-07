@@ -248,8 +248,9 @@ Cannon.prototype.fire = function() {
         var r = (Math.random() * varDeg) - varDeg / 2;
         confetto.setDirection(deg + r, .6 + Math.random() * .1);
         confetto.attach();
-        this.sound_fire.play();
     }
+    
+    this.sound_fire.play();
 };
 Cannon.prototype.kill = function() {
     this.sound_fire.kill();

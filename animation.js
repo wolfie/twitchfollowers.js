@@ -243,12 +243,17 @@ Cannon.prototype.fire = function() {
     var deg = 90 - (this.x / width - .5) * 90;
     var varDeg = 20;
 
+    var confetti = [];
     for (var i = 0; i < 50; i++) {
         var confetto = new Confetto(this.x, this.y);
         var r = (Math.random() * varDeg) - varDeg / 2;
         confetto.setDirection(deg + r, .6 + Math.random() * .1);
-        confetto.attach();
+        confetti.push(confetto);
     }
+
+    confetti.forEach(function (confetto) {
+        confetto.attach();
+    });
     
     this.sound_fire.play();
 };

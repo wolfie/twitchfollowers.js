@@ -28,7 +28,7 @@ Technically, roughly speaking:
 **`<div id='result'></div>`** is the element that is reserved for displaying whatever 
 needs to be displayed.
 
-**`window.annouceNewFollowersRaw`** is called whenever a new follower (or _followers_) is found. The result
+**`window.announceNewFollowersRaw`** is called whenever a new follower (or _followers_) is found. The result
 is an object formatted according to [the Twitch API documentation][doc] containing the new follower(s).
 
 [doc]: https://github.com/justintv/Twitch-API/blob/master/v3_resources/follows.md#get-channelschannelfollows

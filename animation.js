@@ -376,7 +376,7 @@ window.announceNewFollowers = function(followers) {
     }
 
     else {
-        var follower = followers[0]
+        var follower = followers[0];
         new Nameplate(follower).attach();
         var minX = Nameplate.instance.x - Nameplate.instance.halfWidth;
         var maxX = Nameplate.instance.x + Nameplate.instance.halfWidth;

@@ -186,12 +186,15 @@ function Cannon(x, y) {
 
     this.sound_fire = new AudioEntity('sfx/cannon_fire.mp3');
     this.sound_impact = new AudioEntity('sfx/cannon_impact.wav');
-    this.sound_fire.attach();
-    this.sound_impact.attach();
 }
 Cannon.idleShootDelay = 500;
 Cannon.restThreshold = 0.1;
 Cannon.prototype = Object.create(GravityEntity.prototype);
+Cannon.prototype.attach = function() {
+    GravityEntity.prototype.attach.call(this);
+    this.sound_fire.attach();
+    this.sound_impact.attach();
+};
 Cannon.prototype.tick = function(dTime) {
     GravityEntity.prototype.tick.call(this, dTime);
 

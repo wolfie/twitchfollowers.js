@@ -68,8 +68,8 @@ Need to use JSONP to circumvent cross site scripting protections
      */
 </script>
 
+<script src="./config.js"></script>
 <script src="lib/main.js"></script>
-<script src="lib/announcer.js"></script>
 <script src="lib/tests.js" async></script>
 
 <script>
@@ -80,7 +80,10 @@ Need to use JSONP to circumvent cross site scripting protections
             window.location.hash = window.prompt("Which channel to listen to?")
         }
 
-        start();
+        var script = document.createElement('script');
+        script.onload = start;
+        script.src = 'lib/announcer-'+config.announcer+'.js';
+        document.body.appendChild(script);
     })();
 </script>
 </body>

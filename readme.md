@@ -43,3 +43,5 @@ Sound effects:
 
  * [Cannon fire](http://soundbible.com/909-Cannon.html)
  * [Cannon impact](http://soundbible.com/1742-Anvil-Impact-1x.html)
+ * [Toast appear](http://soundbible.com/2017-End-Fx.html)
+ * [Toast disappear](http://soundbible.com/2067-Blop.html)

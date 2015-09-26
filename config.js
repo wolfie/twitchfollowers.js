@@ -1,4 +1,8 @@
 /** @type Config */
 var config = {
-    'announcer': 'toast'
+    'announcer': 'toast',
+    'testmode': {
+        'enabled': false,
+        'intervalMillis': 10000
+    }
 };

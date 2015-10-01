@@ -1,4 +1,5 @@
-window.config = {
+/** @type Config */
+var config = {
     'announcer': 'toast',
     'testmode': {
         'enabled': false,

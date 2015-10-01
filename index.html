@@ -36,10 +36,8 @@ Need to use JSONP to circumvent cross site scripting protections
 
 <script>
     (function() {
-        window.onhashchange = function() { window.location.reload() };
-
         if (!channel) {
-            window.location.hash = window.prompt("Which channel to listen to?")
+            error("No channel configured in config.js");
         }
 
         var script = document.createElement('script');

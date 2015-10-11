@@ -5,5 +5,6 @@ window.config = {
     'testmode': {
         'enabled': false,
         'intervalMillis': 10000
+        'batchSize': 2,
     }
 };

@@ -1,10 +1,10 @@
 window.config = {
     'channel': 'gowolfie',
-    'announcer': 'toast',
-    'globalVolume': 0.2,
+    'announcer': 'cannons',
+    'globalVolume': 0.1,
     'testmode': {
-        'enabled': false,
-        'intervalMillis': 10000
+        'enabled': true,
         'batchSize': 2,
+        'intervalMillis': 12000
     }
 };

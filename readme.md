@@ -15,7 +15,7 @@ cycle.
 
 Technically, roughly speaking:
 
-1. `channel` := hash fraction in URI
+1. `channel` := configured in config.js
 1. `followers` := current count of followers for `channel`
 1. sleep
 1. `newFollowers` := all followers for `channel` after `followers` offset
